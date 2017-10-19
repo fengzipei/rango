@@ -1,0 +1,15 @@
+{% extends "lanunion/base.html" %}
+
+{% block body_block %}
+
+
+    <h1>{{ news.title }}</h1>
+
+    <h2>{{ news.publish_time }}</h2>
+
+    <h2>{{ news.pubisher_id.name }}</h2>
+
+    {{ news.content }}
+
+{% endblock %}
+

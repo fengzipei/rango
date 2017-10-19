@@ -1,0 +1,20 @@
+{% extends 'lanunion/base.html' %}
+
+{% block body_block %}
+
+    <h1>User profile</h1>
+
+    {% if user.is_authenticated %}
+        <h1>hello {{ user.username }}!</h1>
+
+        {% if user_profile %}
+            {{ user_profile.name }}
+        {% else %}
+            <p>No attributes are available.</p>
+        {% endif %}
+
+    {% else %}
+        <h1>Please login first.</h1>
+    {% endif %}
+
+{% endblock %}

@@ -1,13 +1,14 @@
 from django.db import models
 
+from django.contrib.auth.models import User
+
 
 # Create your models here.
 
 
 class Staff(models.Model):
-    id = models.CharField(max_length=50, primary_key=True)
+    user = models.OneToOneField(User)
     name = models.CharField(max_length=50)
-    email = models.EmailField(max_length=100)
     categories = (
         ('student', 'student'),
         ('super admin', 'super admin'),
@@ -22,7 +23,10 @@ class Staff(models.Model):
     exit_time = models.DateTimeField('date leave', null=True, blank=True)
 
     def __str__(self):
-        return self.id
+        return self.user.username
+
+    def __unicode__(self):
+        return self.user.username
 
 
 class RepairOrder(models.Model):
@@ -35,7 +39,7 @@ class RepairOrder(models.Model):
     comment = models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self):
-        return str(self.order_id)
+        return str(self.order_id) + " " + str(self.applicant_id.id) + " " + str(self.applicant_id.name)
 
 
 class Advices(models.Model):
@@ -45,7 +49,7 @@ class Advices(models.Model):
     suggester_id = models.ForeignKey(Staff, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.id)
+        return str(self.id) + " " + self.content[:10]
 
 
 class Applications(models.Model):
@@ -58,4 +62,15 @@ class Applications(models.Model):
     audit_time = models.DateTimeField('date audited', blank=True, null=True)
 
     def __str__(self):
-        return str(self.applicant_id)
+        return str(self.application_id) + " " + str(self.applicant_id.id) + " " + str(self.applicant_id.name)
+
+
+class News(models.Model):
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=100)
+    publish_time = models.DateTimeField('data published')
+    pubisher_id = models.ForeignKey(Staff, on_delete=models.CASCADE, related_name='publisher_id')
+    content = models.CharField(max_length=1500)
+
+    def __str__(self):
+        return str(self.id) + " " + self.title
