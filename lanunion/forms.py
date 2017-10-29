@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
-from lanunion.models import Profile
+
+from lanunion.models import Profile, RepairOrder, Advice
 
 
 class UserForm(forms.ModelForm):
@@ -13,3 +14,15 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ('name', 'address')
+
+
+class RepairForm(forms.ModelForm):
+    class Meta:
+        model = RepairOrder
+        fields = ('problem_text',)
+
+
+class SuggestForm(forms.ModelForm):
+    class Meta:
+        model = Advice
+        fields = ('content',)

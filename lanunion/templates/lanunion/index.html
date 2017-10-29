@@ -4,31 +4,31 @@
 
 
     {% if user.is_authenticated %}
-        <h1>hello {{ user.username }}!</h1>
-        <a href="/lanunion/logout/">Logout</a>
-
-        <h2><a href="/lanunion/profile/"> User Profile </a></h2>
-
+        <h1>hello {{ user.username }}!</h1></li>
+        <li><a href="/lanunion/logout/">Logout</a></li>
+        <li><a href="/lanunion/repair/">Repair</a></li>
+        <li><a href="/lanunion/my_orders/">My orders</a></li>
+        <li><a href="/lanunion/suggest/">Suggest</a></li>
+        <li><a href="/lanunion/my_advice/"> My advice</a></li>
+        <li><a href="/lanunion/profile/"> User Profile </a></li>
     {% else %}
         <h1>hello world!</h1>
         <a href="/lanunion/login/">Login</a>
     {% endif %}
 
-    <a href="">
-        <br>
+
+    <h2>News</h2>
+    {% if top_news %}
+        <ul>
+            {% for news in top_news %}
+                <li><a href="/lanunion/news/{{ news.id }}">{{ news.title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No news are available.</p>
+    {% endif %}
 
 
-        {% if top_news %}
-            <ul>
-                {% for news in top_news %}
-                    <li><a href="/lanunion/news/{{ news.id }}">{{ news.title }}</a></li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No news are available.</p>
-        {% endif %}
-
-
-        <a href="/lanunion/about/">About</a>>
+    <a href="/lanunion/about/">About</a>
 
 {% endblock %}

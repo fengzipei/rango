@@ -1,7 +1,5 @@
-from django.db import models
-
 from django.contrib.auth.models import User
-
+from django.db import models
 # Create your models here.
 from django.utils import timezone
 
@@ -34,12 +32,18 @@ class RepairOrder(models.Model):
     applicant_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='applicant_id')
     problem_text = models.CharField(max_length=500)
     repairer_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='repairer_id', blank=True, null=True)
-    create_time = models.DateTimeField('date created')
+    create_time = models.DateTimeField('date created', default=timezone.now)
     finish_time = models.DateTimeField('date finished', blank=True, null=True)
     comment = models.CharField(max_length=500, blank=True, null=True)
+    order_status = (
+        ('waiting for repairing', 'waiting for repairing'),
+        ('processing', 'processing'),
+        ('finished', 'finished'),
+    )
+    status = models.CharField(max_length=50, choices=order_status, default=order_status[0])
 
     def __str__(self):
-        return str(self.order_id) + " " + str(self.applicant_id.id) + " " + str(self.applicant_id.name)
+        return str(self.order_id) + " " + str(self.applicant_id.id) + " " + str(self.applicant_id.username)
 
 
 class Advice(models.Model):

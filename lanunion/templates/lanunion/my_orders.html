@@ -1,0 +1,17 @@
+{% extends "lanunion/base.html" %}
+
+{% block body_block %}
+
+    <h1>My orders:</h1>
+
+    {% if repair_orders %}
+        <ul>
+            {% for order in repair_orders %}
+                <li><a href="/lanunion/order_detail/{{ order.order_id }}">{{ order.problem_text }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No orders are available.</p>
+    {% endif %}
+
+{% endblock %}

@@ -1,16 +1,15 @@
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.views import logout
 from django.db import transaction
 from django.http import HttpResponseRedirect
-
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from django.utils import timezone
-from django.contrib.auth import authenticate, login
 
-from lanunion.forms import UserForm, ProfileForm
-from .models import News, Profile
+from lanunion.forms import UserForm, ProfileForm, RepairForm, SuggestForm
+from .models import News, Profile, RepairOrder, Advice
 
 
 def index(request):
@@ -100,8 +99,102 @@ def profile(request):
     return render(request, 'lanunion/profile.html', context_dict, context)
 
 
+@login_required
+@transaction.atomic
+def repair(request):
+    context = RequestContext(request)
+    context_dict = {
+        'repair_form': RepairForm(instance=request.user),
+    }
+    if request.method == 'POST':
+        repair_form = RepairForm(data=request.POST)
+        if repair_form.is_valid():
+            form = repair_form.save(commit=False)
+            form.applicant_id = request.user
+            form.save()
+            return render(request, 'lanunion/index.html', context_dict, context)
+        else:
+            context_dict['error'] = 'the form is invalid'
+
+    return render(request, 'lanunion/repair.html', context_dict, context)
+
+
+@login_required
+def my_orders(request):
+    context = RequestContext(request)
+
+    context_dict = {
+        'repair_orders': RepairOrder.objects.filter(applicant_id=request.user),
+    }
+
+    return render(request, 'lanunion/my_orders.html', context_dict, context)
+
+
+@login_required
+def my_advice(request):
+    context = RequestContext(request)
+
+    context_dict = {
+        'advice': Advice.objects.filter(suggester_id=request.user),
+    }
+
+    return render(request, 'lanunion/my_advice.html', context_dict, context)
+
+
+@login_required
+def order_detail(request, order_id):
+    context = RequestContext(request)
+
+    repair_order = RepairOrder.objects.get(order_id=order_id)
+
+    if repair_order.applicant_id == request.user:
+        context_dict = {
+            'repair_order': repair_order,
+        }
+    else:
+        context_dict = {
+            'error': "Invalid operation",
+        }
+
+    return render(request, 'lanunion/order_detail.html', context_dict, context)
+
+
+@login_required
+def advice_detail(request, advice_id):
+    context = RequestContext(request)
+
+    advice = Advice.objects.get(id=advice_id)
+
+    if advice.suggester_id == request.user:
+        context_dict = {
+            'advice': advice,
+        }
+    else:
+        context_dict = {
+            'error': "Invalid operation",
+        }
+
+    return render(request, 'lanunion/advice_detail.html', context_dict, context)
+
+
+@login_required
+@transaction.atomic
 def suggest(request):
-    pass
+    context = RequestContext(request)
+    context_dict = {
+        'suggest_form': SuggestForm(instance=request.user),
+    }
+    if request.method == 'POST':
+        suggest_form = SuggestForm(data=request.POST)
+        if suggest_form.is_valid():
+            form = suggest_form.save(commit=False)
+            form.suggester_id = request.user
+            form.save()
+            return render(request, 'lanunion/index.html', context_dict, context)
+        else:
+            context_dict['error'] = 'the form is invalid'
+
+    return render(request, 'lanunion/suggest.html', context_dict, context)
 
 
 def about(request):

@@ -1,0 +1,17 @@
+{% extends "lanunion/base.html" %}
+
+{% block body_block %}
+
+    <h1>My advice:</h1>
+
+    {% if advice %}
+        <ul>
+            {% for a in advice %}
+                <li><a href="/lanunion/advice_detail/{{ a.id }}">{{ a.content }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No advice are available.</p>
+    {% endif %}
+
+{% endblock %}

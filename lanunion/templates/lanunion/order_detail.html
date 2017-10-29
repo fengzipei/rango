@@ -1,0 +1,18 @@
+{% extends "lanunion/base.html" %}
+
+{% block body_block %}
+
+    {% if error %}
+
+        {{ error }}
+
+    {% else %}
+
+        <li>{{ repair_order.order_id }}</li>
+        <li>{{ repair_order.applicant_id }}</li>
+        <li>{{ repair_order.problem_text }}</li>
+        <li>{{ repair_order.create_time }}</li>
+
+    {% endif %}
+
+{% endblock %}
