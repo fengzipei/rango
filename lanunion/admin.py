@@ -4,8 +4,8 @@ from django.contrib import admin
 
 from .models import *
 
-admin.site.register(Staff)
+admin.site.register(Profile)
 admin.site.register(RepairOrder)
-admin.site.register(Applications)
-admin.site.register(Advices)
+admin.site.register(Application)
+admin.site.register(Advice)
 admin.site.register(News)

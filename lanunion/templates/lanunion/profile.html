@@ -2,19 +2,21 @@
 
 {% block body_block %}
 
-    <h1>User profile</h1>
+    <h1>User profile:</h1>
+    <li>id = {{ user.username }}</li>
+    <li>email = {{ user.email }}</li>
+    <li>data joined = {{ user.date_joined }}</li>
+    <li>name = {{ profile.name }}</li>
+    <li>address = {{ profile.address }}</li>
+    <li>score = {{ profile.score }}</li>
 
-    {% if user.is_authenticated %}
-        <h1>hello {{ user.username }}!</h1>
+    <h1>Update profile:</h1>
 
-        {% if user_profile %}
-            {{ user_profile.name }}
-        {% else %}
-            <p>No attributes are available.</p>
-        {% endif %}
-
-    {% else %}
-        <h1>Please login first.</h1>
-    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        {{ user_form.as_p }}
+        {{ profile_form.as_p }}
+        <button type="submit">Save changes</button>
+    </form>
 
 {% endblock %}

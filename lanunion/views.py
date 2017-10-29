@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.views import logout
+from django.db import transaction
 from django.http import HttpResponseRedirect
 
 from django.shortcuts import render, render_to_response
@@ -8,7 +9,8 @@ from django.template import RequestContext
 from django.utils import timezone
 from django.contrib.auth import authenticate, login
 
-from .models import News, Staff
+from lanunion.forms import UserForm, ProfileForm
+from .models import News, Profile
 
 
 def index(request):
@@ -77,14 +79,23 @@ def user_logout(request):
 
 
 @login_required
-def user_profile(request):
+@transaction.atomic
+def profile(request):
     context = RequestContext(request)
 
-    user = User.objects.get(username=request.user)
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = ProfileForm(request.POST, instance=request.user.profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
 
-    profile = Staff.objects.get(user=user)
-
-    context_dict = {'user_profile': profile, 'user': user}
+    context_dict = {
+        'user': User.objects.get(username=request.user),
+        'profile': Profile.objects.get(user=request.user),
+        'user_form': UserForm(instance=request.user),
+        'profile_form': ProfileForm(instance=request.user.profile),
+    }
 
     return render(request, 'lanunion/profile.html', context_dict, context)
 
