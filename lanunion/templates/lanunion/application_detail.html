@@ -1,0 +1,15 @@
+{% extends "lanunion/base.html" %}
+
+{% block body_block %}
+
+
+    <li>{{ application.applicant_id }}</li>
+    <li>{{ application.create_time }}</li>
+    <li>{{ application.applicant_id }}</li>
+    <li>{{ application.applicant_id.profile.name }}</li>
+    <li>{{ application.status }}</li>
+
+    {{ application.reason }}
+
+{% endblock %}
+

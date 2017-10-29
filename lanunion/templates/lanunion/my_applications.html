@@ -1,0 +1,18 @@
+{% extends "lanunion/base.html" %}
+
+{% block body_block %}
+
+    <h1>My applications:</h1>
+
+    {% if applications %}
+        <ul>
+            {% for application in applications %}
+                <li><a href="/lanunion/application_detail/{{ application.application_id }}">{{ application.reason }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No advice are available.</p>
+    {% endif %}
+
+{% endblock %}

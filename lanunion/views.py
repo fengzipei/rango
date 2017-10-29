@@ -8,8 +8,8 @@ from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from django.utils import timezone
 
-from lanunion.forms import UserForm, ProfileForm, RepairForm, SuggestForm
-from .models import News, Profile, RepairOrder, Advice
+from lanunion.forms import UserForm, ProfileForm, RepairForm, SuggestForm, ApplicationForm
+from .models import News, Profile, RepairOrder, Advice, Application
 
 
 def index(request):
@@ -142,6 +142,17 @@ def my_advice(request):
 
 
 @login_required
+def my_applications(request):
+    context = RequestContext(request)
+
+    context_dict = {
+        'applications': Application.objects.filter(applicant_id=request.user),
+    }
+
+    return render(request, 'lanunion/my_applications.html', context_dict, context)
+
+
+@login_required
 def order_detail(request, order_id):
     context = RequestContext(request)
 
@@ -178,6 +189,24 @@ def advice_detail(request, advice_id):
 
 
 @login_required
+def application_detail(request, application_id):
+    context = RequestContext(request)
+
+    application = Application.objects.get(application_id=application_id)
+
+    if application.applicant_id == request.user:
+        context_dict = {
+            'application': application,
+        }
+    else:
+        context_dict = {
+            'error': "Invalid operation",
+        }
+
+    return render(request, 'lanunion/application_detail.html', context_dict, context)
+
+
+@login_required
 @transaction.atomic
 def suggest(request):
     context = RequestContext(request)
@@ -195,6 +224,26 @@ def suggest(request):
             context_dict['error'] = 'the form is invalid'
 
     return render(request, 'lanunion/suggest.html', context_dict, context)
+
+
+@login_required
+@transaction.atomic
+def apply(request):
+    context = RequestContext(request)
+    context_dict = {
+        'application_form': ApplicationForm(instance=request.user),
+    }
+    if request.method == 'POST':
+        application_form = ApplicationForm(data=request.POST)
+        if application_form.is_valid():
+            form = application_form.save(commit=False)
+            form.applicant_id = request.user
+            form.save()
+            return render(request, 'lanunion/index.html', context_dict, context)
+        else:
+            context_dict['error'] = 'the form is invalid'
+
+    return render(request, 'lanunion/apply.html', context_dict, context)
 
 
 def about(request):

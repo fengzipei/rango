@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 
-from lanunion.models import Profile, RepairOrder, Advice
+from lanunion.models import Profile, RepairOrder, Advice, Application
 
 
 class UserForm(forms.ModelForm):
@@ -26,3 +26,9 @@ class SuggestForm(forms.ModelForm):
     class Meta:
         model = Advice
         fields = ('content',)
+
+
+class ApplicationForm(forms.ModelForm):
+    class Meta:
+        model = Application
+        fields = ('reason',)

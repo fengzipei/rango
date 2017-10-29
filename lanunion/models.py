@@ -64,6 +64,12 @@ class Application(models.Model):
     auditor_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='auditor_id', blank=True, null=True)
     comment = models.CharField(max_length=500, blank=True, null=True)
     audit_time = models.DateTimeField('date audited', blank=True, null=True)
+    application_status = (
+        ('waiting for auditing', 'waiting for auditing'),
+        ('accepted', 'accepted'),
+        ('rejected', 'rejected')
+    )
+    status = models.CharField(max_length=50, choices=application_status, default=application_status[0])
 
     def __str__(self):
         return str(self.application_id) + " " + str(self.applicant_id.id) + " " + str(self.applicant_id.name)
