@@ -8,13 +8,40 @@
 
     {% else %}
 
-        <li>{{ repair_order.order_id }}</li>
-        <li>{{ repair_order.applicant_id }}</li>
-        <li>{{ repair_order.problem_text }}</li>
-        <li>{{ repair_order.create_time }}</li>
-        <li>{{ repair_order.status }}</li>
+        <li>Order id: {{ repair_order.order_id }}</li>
+        <li>Applicant id: {{ repair_order.applicant_id }}</li>
+        <li>Problem: {{ repair_order.problem_text }}</li>
+        <li>Create time: {{ repair_order.create_time }}</li>
+        <li>Status: {{ repair_order.status }}</li>
+
+        {% if repair_order %}
+            {% if repair_order.status == "('waiting for repairing', 'waiting for repairing')" %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="submit" name="button" value="Repair"/>
+                </form>
+
+            {% elif repair_order.status == "('processing', 'processing')" %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    {{ comment_form.as_p }}
+                    <input type="submit" name="button" value="Finish"/>
+                </form>
+
+            {% else %}
+                <li>Repairer id: {{ repair_order.repairer_id.username }}</li>
+                <li>Repairer name: {{ repair_order.repairer_id.profile.name }}</li>
+                <li>Comment: {{ repair_order.comment }}</li>
+                <li>Finish time: {{ repair_order.finish_time }}</li>
+
+            {% endif %}
 
 
+            {{ button }}
+
+        {% endif %}
     {% endif %}
 
 {% endblock %}

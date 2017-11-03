@@ -11,6 +11,30 @@
         <li>{{ advice.id }}</li>
         <li>{{ advice.suggester_id }}</li>
         <li>{{ advice.create_time }}</li>
+        <li>{{ advice.status }}</li>
+
+        {% if advice.status != "('waiting for review', 'waiting for review')" %}
+
+            <li>Reviewer id: {{ advice.reviewer_id.username }}</li>
+            <li>Reviewer name: {{ advice.reviewer_id.profile.name }}</li>
+            <li>Comment: {{ advice.comment }}</li>
+            <li>Review time: {{ advice.review_time }}</li>
+
+        {% endif %}
+
+        {% if user.profile.category != 'student' and user.profile.category != 'teacher' %}
+
+            {% if advice.status == "('waiting for review', 'waiting for review')" %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    {{ comment_form.as_p }}
+                    <input type="submit" name="button" value="Submit"/>
+                </form>
+
+            {% endif %}
+
+        {% endif %}
 
     {% endif %}
 

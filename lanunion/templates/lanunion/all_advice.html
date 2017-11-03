@@ -1,0 +1,27 @@
+{% extends "lanunion/base.html" %}
+
+{% block body_block %}
+
+    <h1>All advice:</h1>
+
+    {{ error }}
+
+    {% if all_advice %}
+        <h2>Unreviewed advice:</h2>
+        <ul>
+            {% for advice in unreviewed_advice %}
+                <li><a href="/lanunion/advice_detail/{{ advice.advice_id }}">{{ advice.content }}</a></li>
+            {% endfor %}
+        </ul>
+
+        <h2>Reviewed advice:</h2>
+        <ul>
+            {% for advice in reviewed_advice %}
+                <li><a href="/lanunion/advice_detail/{{ advice.advice_id }}">{{ advice.content }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No advice are available.</p>
+    {% endif %}
+
+{% endblock %}

@@ -5,11 +5,10 @@
     {% if user.is_authenticated %}
         {{ error }}
 
-        <form method="post">
-            {% csrf_token %}
-            {{ repair_form.as_p }}
-            <button type="submit">Submit</button>
-        </form>
+        {% for report in reports %}
+            <li><a href="/lanunion/repair_orders/{{ report.order_id }}">{{ report.problem_text }}</a> applicant
+                name: {{ report.applicant_id.profile.name }}</li>
+        {% endfor %}
 
     {% else %}
         Please login in first.

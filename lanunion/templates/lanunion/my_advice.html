@@ -7,7 +7,7 @@
     {% if advice %}
         <ul>
             {% for a in advice %}
-                <li><a href="/lanunion/advice_detail/{{ a.id }}">{{ a.content }}</a></li>
+                <li><a href="/lanunion/advice_detail/{{ a.advice_id }}">{{ a.content }}</a></li>
             {% endfor %}
         </ul>
     {% else %}

@@ -47,10 +47,19 @@ class RepairOrder(models.Model):
 
 
 class Advice(models.Model):
-    id = models.AutoField(primary_key=True)
+    advice_id = models.AutoField(primary_key=True)
     content = models.CharField(max_length=1000)
     create_time = models.DateTimeField('date created', default=timezone.now)
     suggester_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    advice_status = (
+        ('waiting for review', 'waiting for review'),
+        ('reviewed', 'reviewed'),
+    )
+    status = models.CharField(max_length=50, choices=advice_status, default=advice_status[0])
+    comment = models.CharField(max_length=500, blank=True, null=True)
+    reviewer_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='advice_reviewer_id', blank=True,
+                                    null=True)
+    review_time = models.DateTimeField('date reviewed', blank=True, null=True)
 
     def __str__(self):
         return str(self.id) + " " + self.content[:10]
@@ -61,25 +70,26 @@ class Application(models.Model):
     applicant_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='newbie_id')
     create_time = models.DateTimeField('data created', default=timezone.now)
     reason = models.CharField(max_length=500)
-    auditor_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='auditor_id', blank=True, null=True)
+    reviewer_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='application_reviewer_id', blank=True,
+                                    null=True)
     comment = models.CharField(max_length=500, blank=True, null=True)
-    audit_time = models.DateTimeField('date audited', blank=True, null=True)
+    review_time = models.DateTimeField('date reviewed', blank=True, null=True)
     application_status = (
-        ('waiting for auditing', 'waiting for auditing'),
+        ('waiting for reviewing', 'waiting for reviewing'),
         ('accepted', 'accepted'),
         ('rejected', 'rejected')
     )
     status = models.CharField(max_length=50, choices=application_status, default=application_status[0])
 
     def __str__(self):
-        return str(self.application_id) + " " + str(self.applicant_id.id) + " " + str(self.applicant_id.name)
+        return str(self.application_id) + " " + str(self.applicant_id.id) + " " + str(self.applicant_id.username)
 
 
 class News(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=100)
     publish_time = models.DateTimeField('data published', default=timezone.now)
-    pubisher_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='publisher_id')
+    publisher_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='publisher_id')
     content = models.CharField(max_length=1500)
 
     def __str__(self):

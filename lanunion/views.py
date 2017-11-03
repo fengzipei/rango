@@ -4,11 +4,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import logout
 from django.db import transaction
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render, render_to_response, redirect
 from django.template import RequestContext
 from django.utils import timezone
 
-from lanunion.forms import UserForm, ProfileForm, RepairForm, SuggestForm, ApplicationForm
+from lanunion.forms import UserForm, ProfileForm, ReportForm, SuggestForm, ApplicationForm, CommentForm, NewsForm
 from .models import News, Profile, RepairOrder, Advice, Application
 
 
@@ -53,7 +53,7 @@ def user_login(request):
             # If so, log the user in and redirect them to the homepage.
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect('/lanunion/')
+                return redirect('/lanunion')
             # The account is inactive; tell by adding variable to the template context.
             else:
                 context_dict['disabled_account'] = True
@@ -101,13 +101,53 @@ def profile(request):
 
 @login_required
 @transaction.atomic
+def report(request):
+    context = RequestContext(request)
+    context_dict = {
+        'report_form': ReportForm(instance=request.user),
+    }
+    if request.method == 'POST':
+        repair_form = ReportForm(data=request.POST)
+        if repair_form.is_valid():
+            form = repair_form.save(commit=False)
+            form.applicant_id = request.user
+            form.save()
+            return redirect('/lanunion')
+        else:
+            context_dict['error'] = 'the form is invalid'
+
+    return render(request, 'lanunion/report.html', context_dict, context)
+
+
+@login_required
+@transaction.atomic
 def repair(request):
     context = RequestContext(request)
     context_dict = {
-        'repair_form': RepairForm(instance=request.user),
+        'reports': RepairOrder.objects.filter(status="('waiting for repairing', 'waiting for repairing')"),
     }
     if request.method == 'POST':
-        repair_form = RepairForm(data=request.POST)
+        repair_form = ReportForm(data=request.POST)
+        if repair_form.is_valid():
+            form = repair_form.save(commit=False)
+            form.applicant_id = request.user
+            form.save()
+            return redirect('/lanunion')
+        else:
+            context_dict['error'] = 'the form is invalid'
+
+    return render(request, 'lanunion/repair.html', context_dict, context)
+
+
+@login_required
+@transaction.atomic
+def all_advice(request):
+    context = RequestContext(request)
+    context_dict = {
+        'all_advice': Advice.objects.filter(status="('waiting for repairing', 'waiting for repairing')"),
+    }
+    if request.method == 'POST':
+        repair_form = ReportForm(data=request.POST)
         if repair_form.is_valid():
             form = repair_form.save(commit=False)
             form.applicant_id = request.user
@@ -124,21 +164,55 @@ def my_orders(request):
     context = RequestContext(request)
 
     context_dict = {
-        'repair_orders': RepairOrder.objects.filter(applicant_id=request.user),
+        'reports': RepairOrder.objects.filter(applicant_id=request.user),
+        'repair_orders': RepairOrder.objects.filter(repairer_id=request.user),
     }
 
     return render(request, 'lanunion/my_orders.html', context_dict, context)
 
 
 @login_required
-def my_advice(request):
+@transaction.atomic
+def repair_orders(request, report_id):
     context = RequestContext(request)
 
+    if request.method == 'POST':
+        if request.POST.get('button') == 'Repair':
+            order = RepairOrder.objects.get(order_id=report_id)
+            order.status = "('processing', 'processing')"
+            order.save()
+        elif request.POST.get('button') == 'Finish':
+            order = RepairOrder.objects.get(order_id=report_id)
+            order.status = "('finished', 'finished')"
+            order.repairer_id = request.user
+            order.finish_time = timezone.now()
+            order.comment = CommentForm(data=request.POST).data['comment']
+            order.save()
+
     context_dict = {
-        'advice': Advice.objects.filter(suggester_id=request.user),
+        'repair_order': RepairOrder.objects.get(order_id=report_id),
+        'comment_form': CommentForm(instance=request.user)
     }
 
-    return render(request, 'lanunion/my_advice.html', context_dict, context)
+    return render(request, 'lanunion/order_detail.html', context_dict, context)
+
+
+@login_required
+def all_advice(request):
+    context = RequestContext(request)
+
+    if request.user.profile.category == 'super admin':
+        context_dict = {
+            'all_advice': Advice.objects.count(),
+            'unreviewed_advice': Advice.objects.filter(status="('waiting for review', 'waiting for review')"),
+            'reviewed_advice': Advice.objects.filter(status="('reviewed', 'reviewed')"),
+        }
+    else:
+        context_dict = {
+            'error': "Invalid operation",
+        }
+
+    return render(request, 'lanunion/all_advice.html', context_dict, context)
 
 
 @login_required
@@ -153,12 +227,23 @@ def my_applications(request):
 
 
 @login_required
+def my_advice(request):
+    context = RequestContext(request)
+
+    context_dict = {
+        'advice': Advice.objects.filter(suggester_id=request.user),
+    }
+
+    return render(request, 'lanunion/my_advice.html', context_dict, context)
+
+
+@login_required
 def order_detail(request, order_id):
     context = RequestContext(request)
 
     repair_order = RepairOrder.objects.get(order_id=order_id)
 
-    if repair_order.applicant_id == request.user:
+    if repair_order.applicant_id == request.user or repair_order.repairer_id == request.user:
         context_dict = {
             'repair_order': repair_order,
         }
@@ -174,17 +259,31 @@ def order_detail(request, order_id):
 def advice_detail(request, advice_id):
     context = RequestContext(request)
 
-    advice = Advice.objects.get(id=advice_id)
+    advice = Advice.objects.get(advice_id=advice_id)
 
-    if advice.suggester_id == request.user:
+    if request.user.profile.category == 'super admin':
+        if request.POST.get('button') == 'Submit':
+            advice = Advice.objects.get(advice_id=advice_id)
+            advice.status = "('reviewed', 'reviewed')"
+            advice.reviewer_id = request.user
+            advice.review_time = timezone.now()
+            advice.comment = CommentForm(data=request.POST).data['comment']
+            advice.save()
+
+        context_dict = {
+            'advice': advice,
+            'comment_form': CommentForm(instance=request.user)
+        }
+
+    elif advice.suggester_id == request.user:
         context_dict = {
             'advice': advice,
         }
+
     else:
         context_dict = {
             'error': "Invalid operation",
         }
-
     return render(request, 'lanunion/advice_detail.html', context_dict, context)
 
 
@@ -219,7 +318,7 @@ def suggest(request):
             form = suggest_form.save(commit=False)
             form.suggester_id = request.user
             form.save()
-            return render(request, 'lanunion/index.html', context_dict, context)
+            return redirect('/lanunion')
         else:
             context_dict['error'] = 'the form is invalid'
 
@@ -239,11 +338,31 @@ def apply(request):
             form = application_form.save(commit=False)
             form.applicant_id = request.user
             form.save()
-            return render(request, 'lanunion/index.html', context_dict, context)
+            return redirect('/lanunion')
         else:
             context_dict['error'] = 'the form is invalid'
 
     return render(request, 'lanunion/apply.html', context_dict, context)
+
+
+@login_required
+@transaction.atomic
+def publish_news(request):
+    context = RequestContext(request)
+    context_dict = {
+        'publish_news_form': NewsForm(instance=request.user),
+    }
+    if request.method == 'POST':
+        form = NewsForm(data=request.POST)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.publisher_id = request.user
+            form.save()
+            return redirect('/lanunion')
+        else:
+            context_dict['error'] = 'the form is invalid'
+
+    return render(request, 'lanunion/publish_news.html', context_dict, context)
 
 
 def about(request):

@@ -4,15 +4,33 @@
 
 
     {% if user.is_authenticated %}
+
         <h1>hello {{ user.username }}!</h1></li>
         <li><a href="/lanunion/logout/">Logout</a></li>
-        <li><a href="/lanunion/repair/">Repair</a></li>
+        <li><a href="/lanunion/report/">Report</a></li>
         <li><a href="/lanunion/my_orders/">My orders</a></li>
         <li><a href="/lanunion/suggest/">Suggest</a></li>
         <li><a href="/lanunion/my_advice/"> My advice</a></li>
         <li><a href="/lanunion/my_applications/"> My applications</a></li>
         <li><a href="/lanunion/profile/">User Profile</a></li>
-        <li><a href="/lanunion/apply/">Join us</a></li>
+
+        {% if user.profile.category == 'student' %}
+            <li><a href="/lanunion/apply/">Join us</a></li>
+        {% endif %}
+
+        {% if user.profile.category != 'student' and user.profile.category != 'teacher' %}
+            <li><a href="/lanunion/repair/">Repair</a></li>
+        {% endif %}
+
+        {% if user.profile.category == 'normal admin' or user.profile.category == 'super admin' %}
+            <li><a href="/lanunion/all_advice/">All advice</a></li>
+        {% endif %}
+
+        {% if user.profile.category == 'super admin' %}
+            <li><a href="/lanunion/publish_news/">Publish news</a></li>
+
+        {% endif %}
+
     {% else %}
         <h1>hello world!</h1>
         <a href="/lanunion/login/">Login</a>
@@ -28,8 +46,5 @@
     {% else %}
         <p>No news are available.</p>
     {% endif %}
-
-
-    <a href="/lanunion/about/">About</a>
 
 {% endblock %}

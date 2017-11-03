@@ -2,16 +2,32 @@
 
 {% block body_block %}
 
-    <h1>My orders:</h1>
+    <h1>My reports:</h1>
 
-    {% if repair_orders %}
+    {% if reports %}
         <ul>
-            {% for order in repair_orders %}
-                <li><a href="/lanunion/order_detail/{{ order.order_id }}">{{ order.problem_text }}</a></li>
+            {% for report in reports %}
+                <li><a href="/lanunion/order_detail/{{ report.order_id }}">{{ report.problem_text }}</a></li>
             {% endfor %}
         </ul>
     {% else %}
         <p>No orders are available.</p>
     {% endif %}
+
+    {% if user.profile.category != 'student' and user.profile.category != 'teacher' %}
+        <h1>My repair orders:</h1>
+
+        {% if repair_orders %}
+            <ul>
+                {% for order in repair_orders %}
+                    <li><a href="/lanunion/order_detail/{{ order.order_id }}">{{ order.problem_text }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No orders are available.</p>
+        {% endif %}
+
+    {% endif %}
+
 
 {% endblock %}

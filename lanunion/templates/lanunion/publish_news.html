@@ -1,0 +1,24 @@
+{% extends 'lanunion/base.html' %}
+
+{% block body_block %}
+
+    {% if user.is_authenticated %}
+        {{ error }}
+
+        {% if user.profile.category == 'super admin' %}
+
+            <form method="post">
+                {% csrf_token %}
+                {{ publish_news_form.as_p }}
+                <button type="submit">Submit</button>
+            </form>
+
+        {% else %}
+            Invalid operation.
+        {% endif %}
+
+    {% else %}
+        Please login in first.
+    {% endif %}
+
+{% endblock %}
