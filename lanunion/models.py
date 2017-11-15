@@ -7,6 +7,8 @@ from django.utils import timezone
 class Profile(models.Model):
     user = models.OneToOneField(User)
     name = models.CharField(max_length=50)
+    phone_number = models.CharField(max_length=10, null=True, blank=True)
+    qq_number = models.CharField(max_length=10, null=True, blank=True)
     categories = (
         ('student', 'student'),
         ('super admin', 'super admin'),
