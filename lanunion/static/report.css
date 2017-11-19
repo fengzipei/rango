@@ -4,6 +4,15 @@
     margin: auto;
 }
 
+.popover-content > ul {
+    padding-left: 10px;
+    margin: 0;
+}
+
+/*.textarea {
+    height: 50px;
+}*/
+
 .full-width {
     float: left;
     width: 100%;
@@ -25,13 +34,19 @@
 }
 
 .form-control {
-    padding: 10px 50px;
+    padding-right: 5px;
+}
+
+.control-label {
+
+    margin-top: 10px;
+    margin-left: 5px;
 }
 
 .form-input {
     height: 50px;
     border-radius: 5px;
-    margin-top: 20px;
+    margin-top: 5px;
 }
 
 .mg-auto {

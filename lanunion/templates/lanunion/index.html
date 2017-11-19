@@ -236,13 +236,32 @@
         </a>
     </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="panel panel-primary">
-                <!-- Default panel contents -->
-                <div class="panel-heading">News</div>
-                <!-- List group -->
-                <ul class="list-group">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-primary">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">News</div>
+                    <!-- List group -->
+                    <ul class="list-group">
+                        {% if top_news %}
+                            {% for news in top_news %}
+                                <li class="list-group-item"><a href="/lanunion/news/{{ news.id }}">{{ news.title }}</a>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="list-group-item">No news are available.</li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+
+                <div class="panel panel-primary">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">Notifications</div>
+                    <!-- List group -->
                     {% if top_news %}
                         {% for news in top_news %}
                             <li class="list-group-item"><a href="/lanunion/news/{{ news.id }}">{{ news.title }}</a>
@@ -251,24 +270,7 @@
                     {% else %}
                         <li class="list-group-item">No news are available.</li>
                     {% endif %}
-                </ul>
-            </div>
-
-        </div>
-        <div class="col-md-6">
-
-            <div class="panel panel-primary">
-                <!-- Default panel contents -->
-                <div class="panel-heading">Notifications</div>
-                <!-- List group -->
-                {% if top_news %}
-                    {% for news in top_news %}
-                        <li class="list-group-item"><a href="/lanunion/news/{{ news.id }}">{{ news.title }}</a>
-                        </li>
-                    {% endfor %}
-                {% else %}
-                    <li class="list-group-item">No news are available.</li>
-                {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -292,5 +294,6 @@
 <script src="../../static/js/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="../../static/js/bootstrap.min.js"></script>
+
 </body>
 </html>

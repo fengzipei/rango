@@ -32,6 +32,36 @@ class Profile(models.Model):
 class RepairOrder(models.Model):
     order_id = models.AutoField(primary_key=True)
     applicant_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='applicant_id')
+    computer_type_categories = (
+        ('pc', 'pc'),
+        ('laptop', 'laptop'),
+    )
+    computer_type = models.CharField(max_length=50, choices=computer_type_categories,
+                                     default=computer_type_categories[0])
+    computer_model = models.CharField(max_length=50, blank=True, null=True)
+    computer_age_categories = (
+        ('< 1 year', '< 1 year'),
+        ('1 ~ 2 years', '1 ~ 2 year'),
+        ('> 2 years', '> 2 year'),
+        ('I don\'t know', 'I don\'t know'),
+    )
+    computer_age = models.CharField(max_length=50, choices=computer_age_categories, default=computer_age_categories[0])
+    computer_os_categories = (
+        ('Windows 10', 'Windows 10'),
+        ('Windows 8', 'Windows 8'),
+        ('Windows 7', 'Windows 7'),
+        ('Windows xp', 'Windows xp'),
+        ('Linux', 'Linux'),
+        ('Mac OS X', 'Mac OS X'),
+        ('I\'m not sure.', 'I\'m not sure.'),
+    )
+    computer_os = models.CharField(max_length=50, choices=computer_os_categories, default=computer_os_categories[0])
+    os_bits_categories = (
+        ('64', '64'),
+        ('32', '32'),
+        ('I\'m not sure.', 'I\'m not sure.'),
+    )
+    os_bits = models.CharField(max_length=50, choices=os_bits_categories, default=os_bits_categories[0])
     problem_text = models.CharField(max_length=500)
     repairer_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='repairer_id', blank=True, null=True)
     create_time = models.DateTimeField('date created', default=timezone.now)
@@ -77,7 +107,7 @@ class Application(models.Model):
     comment = models.CharField(max_length=500, blank=True, null=True)
     review_time = models.DateTimeField('date reviewed', blank=True, null=True)
     application_status = (
-        ('waiting for reviewing', 'waiting for reviewing'),
+        ('waiting for review', 'waiting for review'),
         ('accepted', 'accepted'),
         ('rejected', 'rejected')
     )

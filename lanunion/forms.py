@@ -19,7 +19,7 @@ class ProfileForm(forms.ModelForm):
 class ReportForm(forms.ModelForm):
     class Meta:
         model = RepairOrder
-        fields = ('problem_text',)
+        fields = ('problem_text', 'computer_os', 'computer_age', 'computer_model', 'computer_type', 'os_bits')
 
 
 class SuggestForm(forms.ModelForm):
