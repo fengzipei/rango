@@ -119,6 +119,7 @@
     box-shadow: 0 0 16px #fff;
     overflow: hidden;
     background: aliceblue;
+    padding-bottom: 20px;
 }
 
 .custom-btn {

@@ -174,76 +174,91 @@
             <div class="full-width">
                 <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-xs-12">
                     <div class="custom-form form">
-                        <form method="post" action="/lanunion/report/">
-                            {% csrf_token %}
-                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                <label class="control-label">申请人ID:</label>
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                <input type="text" class="form-control form-input" name="computer_model"
-                                       disabled="disabled" value="{{ application.applicant_id }}">
 
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                <label class="control-label">创建时间:</label>
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                <input type="text" class="form-control form-input" name="computer_model"
-                                       disabled="disabled" value="{{ application.create_time }}">
+                        <div class="col-lg-12 col-md-12 col-xs-12">
+                            <label class="control-label">申请人ID:</label>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-xs-12">
+                            <input type="text" class="form-control form-input" name="computer_model"
+                                   disabled="disabled" value="{{ application.applicant_id }}">
 
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                <label class="control-label">申请ID:</label>
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                <input type="text" class="form-control form-input" name="computer_model"
-                                       disabled="disabled" value="{{ application.applicant_id }}">
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-xs-12">
+                            <label class="control-label">创建时间:</label>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-xs-12">
+                            <input type="text" class="form-control form-input" name="computer_model"
+                                   disabled="disabled" value="{{ application.create_time }}">
 
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                <label class="control-label">申请人名称:</label>
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                <input type="text" class="form-control form-input" name="computer_model"
-                                       disabled="disabled" value="{{ application.applicant_id.profile.name }}">
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                <label class="control-label">状态:</label>
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                <input type="text" class="form-control form-input" name="computer_model"
-                                       disabled="disabled" value="{{ application.status }}">
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-xs-12">
+                            <label class="control-label">申请ID:</label>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-xs-12">
+                            <input type="text" class="form-control form-input" name="computer_model"
+                                   disabled="disabled" value="{{ application.applicant_id }}">
 
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                <label class="control-label">理由:</label>
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-xs-12">
-                                <input type="text" class="form-control form-input" name="computer_model"
-                                       disabled="disabled" value="{{ application.reason }}">
-                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-xs-12">
+                            <label class="control-label">申请人名称:</label>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-xs-12">
+                            <input type="text" class="form-control form-input" name="computer_model"
+                                   disabled="disabled" value="{{ application.applicant_id.profile.name }}">
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-xs-12">
+                            <label class="control-label">状态:</label>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-xs-12">
+                            <input type="text" class="form-control form-input" name="computer_model"
+                                   disabled="disabled" value="{{ application.status }}">
+
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-xs-12">
+                            <label class="control-label">理由:</label>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-xs-12">
+                            <input type="text" class="form-control form-input" name="computer_model"
+                                   disabled="disabled" value="{{ application.reason }}">
+                        </div>
+
+                        {% if application.status == "('waiting for review', 'waiting for review')" %}
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                    <label class="control-label">留言:</label>
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                    <textarea type="text" rows="10" class="form-control form-input"
+                                              name="comment"></textarea>
+                                </div>
+
+                                <div class="col-lg-12 col-md-12 col-xs-12 text-center">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-xs-6 text-center">
+                                            <button class="btn btn-info btn-lg custom-btn" name="button"
+                                                    value="reject"
+                                                    type="submit">拒绝
+                                            </button>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-xs-6 text-center">
+                                            <button class="btn btn-info btn-lg custom-btn" name="button"
+                                                    value="accepted"
+                                                    type="submit">同意
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        {% else %}
                             <div class="col-lg-12 col-md-12 col-xs-12">
                                 <label class="control-label">留言:</label>
                             </div>
                             <div class="col-lg-12 col-md-12 col-xs-12">
-                                {% if application.status == "('waiting for review', 'waiting for review')" %}
-                                    <textarea type="text" rows="10" class="form-control form-input"
-                                              name="problem_text"></textarea>
-                                {% endif %}
+                                <input type="text" class="form-control form-input" name="computer_model"
+                                       disabled="disabled" value="{{ application.comment }}">
                             </div>
-                            <div class="col-lg-12 col-md-12 col-xs-12 text-center">
-                                <div class="row">
-                                    <div class="col-lg-6 col-md-6 col-xs-6 text-center">
-                                        <button class="btn btn-info btn-lg custom-btn" id="submit" type="submit">拒绝
-                                        </button>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 col-xs-6 text-center">
-                                        <button class="btn btn-info btn-lg custom-btn" id="submit" type="submit">同意
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+                        {% endif %}
                     </div>
                 </div>
             </div>

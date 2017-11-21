@@ -107,13 +107,34 @@ def report(request):
         'report_form': ReportForm(instance=request.user),
     }
     if request.method == 'POST':
+
+        computer_type = request.POST["computer_type"]
+        computer_model = request.POST["computer_model"]
+        computer_age = request.POST["computer_age"]
+        computer_os = request.POST["computer_os"]
+        os_bits = request.POST["os_bits"]
+
+        name = request.POST["name"]
+        contact_type = request.POST["contact_type"]
+        number = request.POST["number"]
+        campus = request.POST["campus"]
+        address = request.POST["address"]
+
+        # profile_form = ProfileForm(request.POST, instance=request.user.profile)
+
+
+        print(computer_type, computer_model, computer_age, computer_os, os_bits, name, contact_type, number, campus,
+              address)
+
         repair_form = ReportForm(data=request.POST)
         if repair_form.is_valid():
             form = repair_form.save(commit=False)
             form.applicant_id = request.user
             form.save()
+
             return redirect('/lanunion')
         else:
+            print("error in repair form")
             context_dict['error'] = 'the form is invalid'
 
     return render(request, 'lanunion/report.html', context_dict, context)
@@ -177,11 +198,11 @@ def repair_orders(request, report_id):
     context = RequestContext(request)
 
     if request.method == 'POST':
-        if request.POST.get('button') == 'Repair':
+        if request.POST.get('button') == 'repair':
             order = RepairOrder.objects.get(order_id=report_id)
             order.status = "('processing', 'processing')"
             order.save()
-        elif request.POST.get('button') == 'Finish':
+        elif request.POST.get('button') == 'finish':
             order = RepairOrder.objects.get(order_id=report_id)
             order.status = "('finished', 'finished')"
             order.repairer_id = request.user
@@ -240,14 +261,35 @@ def my_advice(request):
 @login_required
 def order_detail(request, order_id):
     context = RequestContext(request)
+    context_dict = {}
 
     repair_order = RepairOrder.objects.get(order_id=order_id)
 
-    if repair_order.applicant_id == request.user or repair_order.repairer_id == request.user:
+    if repair_order.applicant_id == request.user or repair_order.repairer_id == request.user or request.user.profile.category == 'super admin':
+        print("handle")
+        if request.method == 'POST':
+            button = request.POST["button"]
+            if button == "repair":
+                order = RepairOrder.objects.get(order_id=repair_order.order_id)
+                order.status = "('processing', 'processing')"
+                order.save()
+            elif button == "finish":
+                order = RepairOrder.objects.get(order_id=repair_order.order_id)
+                order.status = "('finished', 'finished')"
+                order.repairer_id = request.user
+                order.finish_time = timezone.now()
+                order.comment = request.POST["comment"]
+                order.save()
+            else:
+                context_dict = {
+                    'error': "Invalid operation",
+                }
+        repair_order = RepairOrder.objects.get(order_id=order_id)
         context_dict = {
             'repair_order': repair_order,
         }
     else:
+        print("error")
         context_dict = {
             'error': "Invalid operation",
         }
@@ -262,7 +304,7 @@ def advice_detail(request, advice_id):
     advice = Advice.objects.get(advice_id=advice_id)
 
     if request.user.profile.category == 'super admin':
-        if request.POST.get('button') == 'Submit':
+        if request.method == "POST":
             advice = Advice.objects.get(advice_id=advice_id)
             advice.status = "('reviewed', 'reviewed')"
             advice.reviewer_id = request.user
@@ -293,10 +335,26 @@ def application_detail(request, application_id):
 
     application = Application.objects.get(application_id=application_id)
 
-    if application.applicant_id == request.user:
+    if request.user.profile.category == 'super admin':
+        if request.method == "POST":
+            application = Application.objects.get(application_id=application_id)
+            application.status = "('reviewed', 'reviewed')"
+            application.reviewer_id = request.user
+            application.review_time = timezone.now()
+            application.comment = request.POST['comment']
+            application.status = request.POST['button']
+            application.save()
+
+        context_dict = {
+            'application': application,
+            'application_form': ApplicationForm(instance=request.user)
+        }
+
+    elif application.application_id == request.user:
         context_dict = {
             'application': application,
         }
+
     else:
         context_dict = {
             'error': "Invalid operation",

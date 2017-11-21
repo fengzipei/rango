@@ -182,9 +182,9 @@
                                 <label class="control-label">故障机型:</label>
                             </div>
                             <div class="col-lg-12 col-md-12 col-xs-12">
-                                <select class="form-control form-input" id="computer_type">
-                                    <option value="01">台式机</option>
-                                    <option value="02">笔记本电脑</option>
+                                <select class="form-control form-input" name="computer_type">
+                                    <option value="pc">台式机</option>
+                                    <option value="laptop">笔记本电脑</option>
                                 </select>
                             </div>
                             <div class="col-lg-12 col-md-12 col-xs-12">
@@ -197,11 +197,11 @@
                                 <label class="control-label">购买时间:</label>
                             </div>
                             <div class="col-lg-12 col-md-12 col-xs-12">
-                                <select class="form-control form-input" id="computer_age">
-                                    <option value="01">< 1 年</option>
-                                    <option value="02">1 ~ 2 年</option>
-                                    <option value="03">> 2 年</option>
-                                    <option value="04">我不确定</option>
+                                <select class="form-control form-input" name="computer_age">
+                                    <option value="< 1 year">< 1 年</option>
+                                    <option value="1 ~ 2 years">1 ~ 2 年</option>
+                                    <option value="> 2 years">> 2 年</option>
+                                    <option value="I don\'t know">我不确定</option>
                                 </select>
                             </div>
                             <div class="col-lg-12 col-md-12 col-xs-12">
@@ -210,21 +210,21 @@
                             <div class="col-lg-12 col-md-12 col-xs-12">
                                 <div class="row">
                                     <div class="col-lg-7 col-md-7 col-xs-7">
-                                        <select class="form-control form-input" id="computer_os">
-                                            <option value="01">Windows 10</option>
-                                            <option value="02">Windows 8</option>
-                                            <option value="03">Windows 7</option>
-                                            <option value="04">Windows xp</option>
-                                            <option value="05">Linux</option>
-                                            <option value="06">Mac OS X</option>
-                                            <option value="07">我不确定</option>
+                                        <select class="form-control form-input" name="computer_os">
+                                            <option value="Windows 10">Windows 10</option>
+                                            <option value="Windows 8">Windows 8</option>
+                                            <option value="Windows 7">Windows 7</option>
+                                            <option value="Windows xp">Windows xp</option>
+                                            <option value="Linux">Linux</option>
+                                            <option value="Mac OS X">Mac OS X</option>
+                                            <option value="I\'m not sure.">我不确定</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-5 col-md-5 col-xs-5">
-                                        <select class="form-control form-input" id="os_bits">
-                                            <option value="01">64 位</option>
-                                            <option value="02">32 位</option>
-                                            <option value="03">我不确定</option>
+                                        <select class="form-control form-input" name="os_bits">
+                                            <option value="64">64 位</option>
+                                            <option value="32">32 位</option>
+                                            <option value="I\'m not sure.">我不确定</option>
                                         </select>
                                     </div>
                                 </div>
@@ -244,7 +244,7 @@
                             </div>
                             <div class="col-lg-12 col-md-12 col-xs-12">
                                 <input type="text" class="form-control form-input" value="{{ user.profile.name }}"
-                                       name="computer_model">
+                                       name="name">
                             </div>
                             <div class="col-lg-12 col-md-12 col-xs-12">
                                 <label class="control-label">联系方式:</label>
@@ -252,13 +252,13 @@
                             <div class="col-lg-12 col-md-12 col-xs-12">
                                 <div class="row">
                                     <div class="col-lg-4 col-md-4 col-xs-4">
-                                        <select class="form-control form-input" id="computer_age">
+                                        <select class="form-control form-input" name="contact_type">
                                             <option value="01">电话</option>
                                             <option value="02">QQ</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-8 col-md-8 col-xs-8">
-                                        <input type="text" class="form-control form-input" name="computer_model">
+                                        <input type="text" class="form-control form-input" name="number">
                                     </div>
                                 </div>
                             </div>
@@ -268,7 +268,7 @@
                             <div class="col-lg-12 col-md-12 col-xs-12">
                                 <div class="row">
                                     <div class="col-lg-4 col-md-4 col-xs-4">
-                                        <select class="form-control form-input" id="computer_age">
+                                        <select class="form-control form-input" name="campus">
                                             <option value="01">A区</option>
                                             <option value="02">B区</option>
                                             <option value="03">C区</option>
@@ -277,7 +277,7 @@
                                     </div>
                                     <div class="col-lg-8 col-md-8 col-xs-8">
                                         <input type="text" class="form-control form-input"
-                                               value="{{ user.profile.address }}" name="computer_model">
+                                               value="{{ user.profile.address }}" name="address">
                                     </div>
                                 </div>
                             </div>
