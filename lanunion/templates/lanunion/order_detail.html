@@ -242,7 +242,7 @@
                             <input type="text" class="form-control form-input" name="computer_model"
                                    disabled="disabled" value="{{ repair_order.status }}">
                         </div>
-                        {% if repair_order.status == "('waiting for repairing', 'waiting for repairing')" %}
+                        {% if repair_order.status == "('waiting for repairing', 'waiting for repairing')" and user.profile.category != "student" %}
                             <div class="col-lg-12 col-md-12 col-xs-12 text-center">
                                 <div class="col-lg-12 col-md-12 col-xs-12 text-center">
                                     <form method="post">
@@ -254,7 +254,7 @@
                                     </form>
                                 </div>
                             </div>
-                        {% elif repair_order.status == "('processing', 'processing')" %}
+                        {% elif repair_order.status == "('processing', 'processing')" and user.profile.category != "student" %}
                             <div class="col-lg-12 col-md-12 col-xs-12">
                                 <label class="control-label">留言:</label>
                             </div>
@@ -274,6 +274,9 @@
                                 </div>
                             </form>
                         {% else %}
+
+                        {% endif %}
+                        {% if repair_order.status == "('finished', 'finished')" %}
                             <div class="col-lg-12 col-md-12 col-xs-12">
                                 <label class="control-label">维修者姓名:</label>
                             </div>
@@ -324,7 +327,7 @@
     <script src="../../../static/js/bootstrap.min.js"></script>
 
     <script src="../../../static/report.js"></script>
-
+</div>
 
 </body>
 </html>

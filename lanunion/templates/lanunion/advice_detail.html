@@ -264,7 +264,7 @@
                                        disabled="disabled" value="{{ advice.review_time }}">
 
                             </div>
-                        {% else %}
+                        {% elif advice.status == "('waiting for review', 'waiting for review')" and user.profile.category == "super admin" %}
                             <div class="col-lg-12 col-md-12 col-xs-12">
                                 <label class="control-label">留言:</label>
                             </div>
@@ -283,6 +283,7 @@
                                     </button>
                                 </div>
                             </form>
+                        {% else %}
                         {% endif %}
 
                     </div>

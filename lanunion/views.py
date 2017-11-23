@@ -86,6 +86,7 @@ def profile(request):
         user_form = UserForm(request.POST, instance=request.user)
         profile_form = ProfileForm(request.POST, instance=request.user.profile)
         if user_form.is_valid() and profile_form.is_valid():
+            print("test")
             user_form.save()
             profile_form.save()
 
@@ -350,12 +351,14 @@ def application_detail(request, application_id):
             'application_form': ApplicationForm(instance=request.user)
         }
 
-    elif application.application_id == request.user:
+    elif application.applicant_id == request.user:
+        print("test")
         context_dict = {
             'application': application,
         }
 
     else:
+        print("error")
         context_dict = {
             'error': "Invalid operation",
         }
@@ -393,11 +396,13 @@ def apply(request):
     if request.method == 'POST':
         application_form = ApplicationForm(data=request.POST)
         if application_form.is_valid():
+            print("valid")
             form = application_form.save(commit=False)
             form.applicant_id = request.user
             form.save()
             return redirect('/lanunion')
         else:
+            print("invalid")
             context_dict['error'] = 'the form is invalid'
 
     return render(request, 'lanunion/apply.html', context_dict, context)

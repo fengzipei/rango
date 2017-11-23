@@ -222,7 +222,7 @@
                                    disabled="disabled" value="{{ application.reason }}">
                         </div>
 
-                        {% if application.status == "('waiting for review', 'waiting for review')" %}
+                        {% if application.status == "('waiting for review', 'waiting for review')" and application.applicant_id.profile.category == "super admin" %}
                             <form method="post">
                                 {% csrf_token %}
                                 <div class="col-lg-12 col-md-12 col-xs-12">
